@@ -43,6 +43,11 @@ export class Property extends Model<
   declare parkingSpaces: CreationOptional<number>;
   declare furnishing: CreationOptional<FurnishingStatus>;
   declare readyToMove: CreationOptional<boolean>;
+  declare furnishingsInventory: CreationOptional<Array<{ key: string; qty: number }> | null>;
+  declare amenities: CreationOptional<string[] | null>;
+  declare nearbyPlaces: CreationOptional<
+    Array<{ name: string; distance: string; category: string }> | null
+  >;
   declare askingPrice: number;
   declare estimatedMinPrice: number | null;
   declare estimatedMaxPrice: number | null;
@@ -128,6 +133,23 @@ Property.init(
       allowNull: false,
       defaultValue: true,
       field: 'ready_to_move',
+    },
+    furnishingsInventory: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      defaultValue: [],
+      field: 'furnishings_inventory',
+    },
+    amenities: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      defaultValue: [],
+    },
+    nearbyPlaces: {
+      type: DataTypes.JSONB,
+      allowNull: true,
+      defaultValue: [],
+      field: 'nearby_places',
     },
     askingPrice: {
       type: DataTypes.DECIMAL(14, 2),

@@ -3,9 +3,37 @@ import {
   FURNISHING_STATUSES,
   PROPERTY_TYPES,
 } from '../../db/enums.js';
+import {
+  AMENITY_KEYS,
+  FURNISHING_ITEM_KEYS,
+  NEARBY_CATEGORIES,
+} from '../../db/property-features.js';
 
 const money = z.coerce.number().positive('Price must be greater than 0');
 const area = z.coerce.number().positive().optional();
+
+const furnishingsInventorySchema = z
+  .array(
+    z.object({
+      key: z.enum(FURNISHING_ITEM_KEYS),
+      qty: z.coerce.number().int().min(1).max(99),
+    }),
+  )
+  .max(40)
+  .optional();
+
+const amenitiesSchema = z.array(z.enum(AMENITY_KEYS)).max(40).optional();
+
+const nearbyPlacesSchema = z
+  .array(
+    z.object({
+      name: z.string().trim().min(2).max(120),
+      distance: z.string().trim().min(1).max(40),
+      category: z.enum(NEARBY_CATEGORIES),
+    }),
+  )
+  .max(20)
+  .optional();
 
 export const sellerCreatePropertySchema = z.object({
   title: z.string().trim().min(5).max(200),
@@ -31,6 +59,9 @@ export const sellerCreatePropertySchema = z.object({
   parkingSpaces: z.coerce.number().int().min(0).max(50).optional(),
   furnishing: z.enum(FURNISHING_STATUSES).optional(),
   readyToMove: z.coerce.boolean().optional(),
+  furnishingsInventory: furnishingsInventorySchema,
+  amenities: amenitiesSchema,
+  nearbyPlaces: nearbyPlacesSchema,
   askingPrice: money,
   estimatedMinPrice: money.optional(),
   estimatedMaxPrice: money.optional(),
