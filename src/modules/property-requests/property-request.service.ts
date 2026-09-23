@@ -5,7 +5,6 @@ import {
   NotFoundError,
   ValidationError,
 } from '../../common/errors/AppError.js';
-import type { PropertyRequestStatus } from '../../db/enums.js';
 import { Property, PropertyRequest, User } from '../../db/models/index.js';
 import { auditService } from '../audit/audit.service.js';
 import type {
