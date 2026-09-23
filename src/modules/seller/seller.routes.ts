@@ -18,6 +18,7 @@ import {
 import { sellerService } from './seller.service.js';
 import { Property } from '../../db/models/index.js';
 import { ForbiddenError, NotFoundError } from '../../common/errors/AppError.js';
+import { propertyRequestService } from '../property-requests/property-request.service.js';
 
 const router = Router();
 
@@ -33,6 +34,17 @@ async function assertOwnProperty(propertyId: string, sellerId: string) {
   }
   return property;
 }
+
+router.get(
+  '/properties/:id/requests',
+  asyncHandler(async (req, res) => {
+    const items = await propertyRequestService.listForSellerProperty(
+      param(req.params.id, 'id'),
+      req.user!.id,
+    );
+    sendSuccess(res, items);
+  }),
+);
 
 router.get(
   '/properties',

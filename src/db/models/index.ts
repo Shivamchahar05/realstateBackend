@@ -10,6 +10,7 @@ import { PropertyHealthReport } from './property-health-report.model.js';
 import { Inspection } from './inspection.model.js';
 import { Transaction } from './transaction.model.js';
 import { AuditLog } from './audit-log.model.js';
+import { PropertyRequest } from './property-request.model.js';
 
 User.hasMany(RefreshToken, { foreignKey: 'userId', as: 'refreshTokens' });
 RefreshToken.belongsTo(User, { foreignKey: 'userId', as: 'user' });
@@ -51,6 +52,11 @@ Transaction.belongsTo(Property, { foreignKey: 'propertyId', as: 'property' });
 Transaction.belongsTo(User, { foreignKey: 'buyerId', as: 'buyer' });
 Transaction.belongsTo(User, { foreignKey: 'propertyManagerId', as: 'propertyManager' });
 
+Property.hasMany(PropertyRequest, { foreignKey: 'propertyId', as: 'requests' });
+PropertyRequest.belongsTo(Property, { foreignKey: 'propertyId', as: 'property' });
+PropertyRequest.belongsTo(User, { foreignKey: 'buyerId', as: 'buyer' });
+User.hasMany(PropertyRequest, { foreignKey: 'buyerId', as: 'propertyRequests' });
+
 User.hasMany(Transaction, { foreignKey: 'buyerId', as: 'buyerTransactions' });
 User.hasMany(Transaction, { foreignKey: 'propertyManagerId', as: 'managedTransactions' });
 User.hasMany(AuditLog, { foreignKey: 'actorId', as: 'auditLogs' });
@@ -66,6 +72,7 @@ export const models = {
   PropertyHealthReport,
   Inspection,
   Transaction,
+  PropertyRequest,
   AuditLog,
 };
 
@@ -79,6 +86,16 @@ export async function syncDatabase(): Promise<void> {
     alter: env.DB_SYNC_ALTER,
     force: env.DB_SYNC_FORCE,
   });
+
+  // Legacy status rename
+  try {
+    await sequelize.query(
+      `UPDATE property_requests SET status = 'CANCELLED' WHERE status = 'CLOSED'`,
+    );
+  } catch {
+    // table may not exist on first force sync before create order settles
+  }
+
   console.log(
     `Database synced (alter=${env.DB_SYNC_ALTER}, force=${env.DB_SYNC_FORCE})`,
   );
@@ -94,6 +111,7 @@ export {
   PropertyHealthReport,
   Inspection,
   Transaction,
+  PropertyRequest,
   AuditLog,
   sequelize,
 };

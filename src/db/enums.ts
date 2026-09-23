@@ -110,6 +110,40 @@ export const TRANSACTION_STAGES = [
 ] as const;
 export type TransactionStage = (typeof TRANSACTION_STAGES)[number];
 
+export const PROPERTY_REQUEST_STATUSES = [
+  'NEW',
+  'CONTACTED',
+  'VISIT_SCHEDULED',
+  'VISITED',
+  'READY_TO_BUY',
+  'TOKEN_ACCEPTED',
+  'DEAL_CLOSED',
+  'CANCELLED',
+] as const;
+export type PropertyRequestStatus = (typeof PROPERTY_REQUEST_STATUSES)[number];
+
+/** Happy-path order (CANCELLED is a side exit). */
+export const PROPERTY_REQUEST_FLOW: PropertyRequestStatus[] = [
+  'NEW',
+  'CONTACTED',
+  'VISIT_SCHEDULED',
+  'VISITED',
+  'READY_TO_BUY',
+  'TOKEN_ACCEPTED',
+  'DEAL_CLOSED',
+];
+
+export const PROPERTY_REQUEST_STATUS_LABELS: Record<PropertyRequestStatus, string> = {
+  NEW: 'Request submitted',
+  CONTACTED: 'Buyer contacted',
+  VISIT_SCHEDULED: 'Visit scheduled',
+  VISITED: 'Visit completed',
+  READY_TO_BUY: 'Ready to buy',
+  TOKEN_ACCEPTED: 'Token accepted',
+  DEAL_CLOSED: 'Deal closed',
+  CANCELLED: 'Cancelled',
+};
+
 export const AUDIT_ACTIONS = [
   'CREATE',
   'UPDATE',

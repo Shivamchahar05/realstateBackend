@@ -11,12 +11,14 @@ import dashboardRoutes from '../modules/dashboard/dashboard.routes.js';
 import auditRoutes from '../modules/audit/audit.routes.js';
 import catalogRoutes from '../modules/catalog/catalog.routes.js';
 import sellerRoutes from '../modules/seller/seller.routes.js';
+import propertyRequestRoutes from '../modules/property-requests/property-request.routes.js';
 
 const apiRouter = Router();
 
 apiRouter.use('/auth', authRoutes);
 apiRouter.use('/catalog', catalogRoutes);
 apiRouter.use('/seller', sellerRoutes);
+apiRouter.use('/property-requests', propertyRequestRoutes);
 apiRouter.use('/users', userRoutes);
 apiRouter.use('/properties', propertyRoutes);
 apiRouter.use('/properties/:propertyId/verifications', verificationRoutes);
